@@ -97,8 +97,8 @@ def dqn():
 
     model = create_model()
 
-    def create_model():
-        model = tf.keras.model
+    #def create_model():
+     #   model = tf.keras.model
     
     def save_weights(self, name):
         self.model.save_weights(name)
@@ -176,6 +176,7 @@ def dqn():
         if episode % save_every_episode == 0:
             agent._build_model()
             save_weights_to_hdf5_group
+            model = create_model()
             save_model(model, saved_model_path.format(epoch=1))
             save_weights
             cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,save_weights_only=True,verbose=1)
