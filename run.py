@@ -37,6 +37,7 @@ from gym.envs.registration import register
 import gym
 from tensorflow import keras
 from keras.models import Sequential, save_model, load_model
+from tensorflow.python.summary.summary_iterator import summary_iterator
 
 tempdir = os.getenv("TEST_TMPDIR", tempfile.gettempdir())
 
@@ -49,10 +50,10 @@ def dqn():
     collect_steps_per_iteration = 100
     replay_buffer_capacity = 100000
     learning_rate = 1e-3
-    save_every_episode = 40
-    episodes = 200
+    save_every_episode = 100
+    episodes = 2000
     max_steps = None
-    epsilon_stop_episode = 150
+    epsilon_stop_episode = 1500
     mem_size = 20000
     discount = 0.95
     batch_size = 512
@@ -75,7 +76,7 @@ def dqn():
 
     optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=learning_rate)
 
-    global_step = tf.compat.v1.train.get_or_create_global_step()
+    global_step = tf.compat.v1.train.get_global_step()
 
 
     saved_model_path = "saved_models/second_model.pb"
@@ -95,10 +96,6 @@ def dqn():
             metrics=[tf.metrics.SparseCategoricalAccuracy()])
         return model
 
-    model = create_model()
-
-    #def create_model():
-     #   model = tf.keras.model
     
     def save_weights(self, name):
         self.model.save_weights(name)
@@ -118,6 +115,7 @@ def dqn():
         #LOAD LAST MODEL IF EPISODE == 1
         if episode == 0:
             model = load_model(saved_model_path.format(epoch=1))
+            agent.model = model
             print("\n\n !!!!!!!!!!!!!!!!!!!!LOAD MODEL, loaded weightss:  ")
             print(model.layers[0].weights) 
 
@@ -149,8 +147,12 @@ def dqn():
         # Train
         if episode % train_every == 0:
             agent.train(batch_size=batch_size, epochs=epochs)
+            model = agent._build_model
+            agent.model = model
             best_score = max(scores)
-            print("\n\n ******AGENT TRAINDE, BEST SCORE: ", best_score, log)
+           # model = create_model()
+            #model.fit()
+            print("\n\n ******AGENT TRAINDED, BEST SCORE: ", best_score, log)
 
         ##############ANOTHER FUNCTIONS TO COLLECT DATA######################
         #register(id='Tetris', entry_point)
@@ -174,11 +176,8 @@ def dqn():
 
         #Save 
         if episode % save_every_episode == 0:
-            agent._build_model()
-            save_weights_to_hdf5_group
-            model = create_model()
+            model = agent._build_model()
             save_model(model, saved_model_path.format(epoch=1))
-            save_weights
             cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,save_weights_only=True,verbose=1)
             model.save_weights(checkpoint_path.format(epoch=1))
             print("\n\n ******SAVING AGENT, sample results:  ")
