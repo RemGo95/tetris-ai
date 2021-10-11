@@ -19,7 +19,6 @@ import shutil
 import tempfile
 import tensorflow as tf
 import zipfile
-import IPython
 from tf_agents.agents.dqn import dqn_agent
 from tf_agents.drivers import dynamic_step_driver
 from tf_agents.environments import suite_gym
@@ -55,11 +54,11 @@ def dqn():
     max_steps = None
     epsilon_stop_episode = 1500
     mem_size = 20000
-    discount = 0.95
+    discount = 0.55
     batch_size = 512
     epochs = 1
-    render_every = 10
-    log_every = 50
+    render_every = 100
+    log_every = 100
     replay_start_size = 2000
     train_every = 1
     n_neurons = [32, 32]
@@ -96,6 +95,10 @@ def dqn():
             metrics=[tf.metrics.SparseCategoricalAccuracy()])
         return model
 
+    #model = create_model()
+
+    #def create_model():
+     #   model = tf.keras.model
     
     def save_weights(self, name):
         self.model.save_weights(name)

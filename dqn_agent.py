@@ -4,6 +4,8 @@ from collections import deque
 import numpy as np
 import random
 
+
+
 # Deep Q Learning Agent + Maximin
 #
 # This version only provides only value per input,
@@ -110,7 +112,7 @@ class DQNAgent:
         return best_state
 
 
-    def train(self, batch_size=32, epochs=3):
+    def train(self, batch_size=512, epochs=1):
         '''Trains the agent'''
         n = len(self.memory)
     
